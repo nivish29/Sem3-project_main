@@ -158,6 +158,21 @@ class _LoginState extends State<Login> {
                       }
                     }),
                 const SizedBox(
+                  height: 20,
+                ),
+                InkWell(
+                  onTap: () {},
+                  child: Container(
+                    height: 45,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: Colors.black)),
+                    child: Center(
+                      child: Text('Login with phone'),
+                    ),
+                  ),
+                ),
+                const SizedBox(
                   height: 40,
                 ),
                 Row(
