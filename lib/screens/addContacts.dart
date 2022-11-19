@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_crud_fb/Utils/utils.dart';
 
 class AddContacts extends StatefulWidget {
   const AddContacts({Key? key}) : super(key: key);
@@ -23,13 +26,17 @@ class _AddContactsState extends State<AddContacts> {
   final addContactsController = TextEditingController();
   final addLinkController = TextEditingController();
   bool loading = false;
-  final databaseRef = FirebaseDatabase.instance.ref('MyQuestions');
+  // final databaseRef = FirebaseDatabase.instance.ref('MyQuestions');
+  final auth = FirebaseAuth.instance;
+  final uid = FirebaseAuth.instance.currentUser?.uid;
+
+  final subfbStore = FirebaseFirestore.instance.collection('User');
   //watch the tech brothers video
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Contacts'),
+        title: Text('Add Questions'),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30),
@@ -98,34 +105,52 @@ class _AddContactsState extends State<AddContacts> {
                     setState(() {
                       loading = true;
                     });
-                    databaseRef
-                        .child(DateTime.now().millisecondsSinceEpoch.toString())
-                        .set({
-                      'id': DateTime.now().millisecondsSinceEpoch.toString(),
+                    // databaseRef
+                    //     .child(DateTime.now().millisecondsSinceEpoch.toString())
+                    //     .set({
+                    //   'id': DateTime.now().millisecondsSinceEpoch.toString(),
+                    //   'title': addContactsController.text.toString(),
+                    //   'category': selectedItem.toString(),
+                    //   'link': addLinkController.text.toString(),
+                    // }).then((value) {
+                    //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    //     content: Text("Added to Database"),
+                    //   ));
+                    //   setState(() {
+                    //     loading = false;
+                    //   });
+                    // }).onError((error, stackTrace) {
+                    //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    //     content: Text("an Error occured"),
+                    //   ));
+                    //   setState(() {
+                    //     loading = false;
+                    //   });
+                    // });
+                    String id =
+                        DateTime.now().millisecondsSinceEpoch.toString();
+                    subfbStore.doc(uid).collection('question').doc(id).set({
+                      'id': id,
                       'title': addContactsController.text.toString(),
                       'category': selectedItem.toString(),
                       'link': addLinkController.text.toString(),
-                    }).then((value) {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text("Added to Database"),
-                      ));
-                      setState(() {
-                        loading = false;
-                      });
-                    }).onError((error, stackTrace) {
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content: Text("an Error occured"),
-                      ));
-                      setState(() {
-                        loading = false;
-                      });
                     });
                   },
-                  child: Text('Add Contact'),
+                  child: Text('Add Question'),
                   style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20))),
                 )),
+            SizedBox(
+              height: 5,
+            ),
+            // ListTile(
+            //   onTap: () {
+            //     Utils().ToastMsg(uid.toString());
+            //   },
+            //   leading: Icon(Icons.account_circle),
+            //   title: Text('UID'),
+            // ),
           ],
         ),
       ),

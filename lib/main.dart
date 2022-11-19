@@ -1,8 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crud_fb/Widgets/Round_btn.dart';
+import 'package:flutter_crud_fb/cubit/google_sign_in/google_sign_in_cubit.dart';
 import 'package:flutter_crud_fb/screens/Auth/Login.dart';
 import 'package:flutter_crud_fb/screens/SplashScreen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 // import 'package:flutter_crud_fb/screens/Start/Login.dart';
 import 'package:flutter_crud_fb/screens/contacts.dart';
 import 'package:flutter_crud_fb/screens/nav_pages/main_page.dart';
@@ -18,10 +21,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'flutter crud',
-        theme: ThemeData(primarySwatch: Colors.deepPurple),
-        // home: Contacts(),
-        home: SplashScreen());
+    return BlocProvider(
+      // watch   https://youtu.be/D43XZZMtSHo
+      create: (context) => GoogleSignInCubit(),
+      child: MaterialApp(
+          title: 'flutter crud',
+          theme: ThemeData(primarySwatch: Colors.deepPurple),
+          // home: Contacts(),
+          home: SplashScreen()),
+    );
   }
 }

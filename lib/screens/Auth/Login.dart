@@ -2,10 +2,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_crud_fb/Widgets/Round_btn.dart';
+import 'package:flutter_crud_fb/cubit/google_sign_in/google_sign_in_cubit.dart';
 import 'package:flutter_crud_fb/screens/Auth/Login_with_Phone.dart';
 import 'package:flutter_crud_fb/screens/Auth/SignUp_Screen.dart';
 import 'package:flutter_crud_fb/screens/Auth/forgot_pass.dart';
+import 'package:flutter_crud_fb/screens/add_profile_details.dart';
 import 'package:flutter_crud_fb/screens/nav_pages/main_page.dart';
 
 import '../../Utils/utils.dart';
@@ -49,8 +52,8 @@ class _LoginState extends State<Login> {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Logged In"),
       ));
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => MainPage()));
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => AddProfileDetails()));
       Utils().ToastMsg(value.user!.email.toString());
     }).onError((error, stackTrace) {
       debugPrint(error.toString());
@@ -222,7 +225,15 @@ class _LoginState extends State<Login> {
                 Material(
                   child: Center(
                     child: IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        // final provider =
+                        //     BlocProvider.of<GoogleSignInCubit>(context);
+                        // provider.signInWithGoogle().then((value) {
+                        //   Utils().ToastMsg('Logged in with Google');
+                        // }).onError((error, stackTrace) {
+                        //   Utils().ToastMsg(error.toString());
+                        // });
+                      },
                       icon: Image.asset('images/googlebg.png'),
                       iconSize: 35,
                     ),

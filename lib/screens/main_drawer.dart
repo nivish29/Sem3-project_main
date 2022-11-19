@@ -13,6 +13,13 @@ class MainDrawer extends StatefulWidget {
 
 class _MainDrawerState extends State<MainDrawer> {
   final auth = FirebaseAuth.instance;
+  // void inputData() {
+  //   // final User? user = auth.currentUser;
+  //   final uid = FirebaseAuth.instance.currentUser?.uid;
+  //   Utils().ToastMsg(uid.toString());
+  //   // here you write the codes to input the data into firestore
+  // }
+  final uid = FirebaseAuth.instance.currentUser?.uid;
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +63,16 @@ class _MainDrawerState extends State<MainDrawer> {
             },
             leading: Icon(Icons.logout),
             title: Text('Logout'),
+          ),
+          SizedBox(
+            height: 5,
+          ),
+          ListTile(
+            onTap: () {
+              Utils().ToastMsg(uid.toString());
+            },
+            leading: Icon(Icons.account_circle),
+            title: Text('UID'),
           ),
         ],
       ),
