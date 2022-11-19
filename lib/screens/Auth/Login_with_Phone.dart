@@ -13,6 +13,16 @@ class LoginWithPhone extends StatefulWidget {
 }
 
 class _LoginWithPhoneState extends State<LoginWithPhone> {
+  TextEditingController countrycode = TextEditingController();
+  var phone = '';
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    countrycode.text = '+91';
+    super.initState();
+  }
+
   bool Loading = false;
   final auth = FirebaseAuth.instance;
   final PhoneController = TextEditingController();
@@ -44,7 +54,9 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
               TextFormField(
                 keyboardType: TextInputType.phone,
                 maxLines: 1,
-                controller: PhoneController,
+                onChanged: (value) {
+                  phone = value;
+                },
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: 'Enter Phone Number',
@@ -67,7 +79,7 @@ class _LoginWithPhoneState extends State<LoginWithPhone> {
                       Loading = true;
                     });
                     auth.verifyPhoneNumber(
-                        phoneNumber: PhoneController.text,
+                        phoneNumber: '${countrycode.text + phone}',
                         verificationCompleted: (_) {
                           Utils().ToastMsg(PhoneController.text);
                           setState(() {

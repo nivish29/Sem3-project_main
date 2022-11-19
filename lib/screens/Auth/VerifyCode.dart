@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crud_fb/screens/nav_pages/main_page.dart';
+import 'package:pinput/pinput.dart';
 
 import '../../Utils/utils.dart';
 import '../../Widgets/Round_btn.dart';
@@ -17,7 +18,7 @@ class VerifyCodeScreen extends StatefulWidget {
 class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
   bool Loading = false;
   final auth = FirebaseAuth.instance;
-  final PhoneController = TextEditingController();
+  final otpController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,18 +44,19 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
               SizedBox(
                 height: 70,
               ),
-              TextFormField(
+              Pinput(
                 keyboardType: TextInputType.phone,
-                maxLines: 1,
-                controller: PhoneController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: 'Enter OTP',
-                  prefixIcon: Icon(Icons.phone),
-                ),
+                length: 6,
+                showCursor: true,
+                controller: otpController,
+                // decoration: const InputDecoration(
+                //   border: OutlineInputBorder(),
+                //   hintText: 'Enter OTP',
+                //   prefixIcon: Icon(Icons.phone),
+                // ),
                 validator: (value) {
                   if (value!.isEmpty) {
-                    return 'Enter Phone Number';
+                    return 'Enter OTP';
                   }
                   return null;
                 },
@@ -70,7 +72,7 @@ class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
                     });
                     final credential = PhoneAuthProvider.credential(
                         verificationId: widget.Verificationid,
-                        smsCode: PhoneController.text.toString());
+                        smsCode: otpController.text.toString());
                     try {
                       await auth.signInWithCredential(credential);
                       Navigator.push(context,

@@ -13,9 +13,10 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  var email = '';
   bool loading = false;
   final _formField = GlobalKey<FormState>();
-  final emailController = TextEditingController();
+  TextEditingController emailendController = TextEditingController();
   final NameController = TextEditingController();
   final passwordController = TextEditingController();
   final NumberController = TextEditingController();
@@ -23,10 +24,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
   FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    emailendController.text = '@iiitvadodara.ac.in';
+    super.initState();
+  }
+
+  @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    emailController.dispose();
+
     passwordController.dispose();
   }
 
@@ -36,7 +44,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     });
     _auth
         .createUserWithEmailAndPassword(
-            email: emailController.text.toString(),
+            // email: emailController.text.toString(),
+            email: '${email + emailendController.text}'.toString(),
             password: passwordController.text.toString())
         .then((value) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -125,19 +134,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         height: 20,
                       ),
                       TextFormField(
-                        keyboardType: TextInputType.emailAddress,
+                        // keyboardType: TextInputType.emailAddress,
                         maxLines: 1,
-                        controller: emailController,
+                        onChanged: (value) {
+                          email = value;
+                        },
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
                           hintText: 'Enter Your Id',
                           prefixIcon: Icon(Icons.email_outlined),
                         ),
-                        onFieldSubmitted: (text) {
-                          emailController.text =
-                              '${emailController.text.toString()}@iiitvadodara.ac.in';
-                        },
-                        textInputAction: TextInputAction.send,
                         validator: (value) {
                           if (value!.isEmpty) {
                             return 'Enter Id';

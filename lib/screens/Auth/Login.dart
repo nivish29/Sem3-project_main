@@ -18,24 +18,32 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  var email = '';
   final _formField = GlobalKey<FormState>();
-  final emailController = TextEditingController();
+  final emailendController = TextEditingController();
   final passwordController = TextEditingController();
 
   final _auth = FirebaseAuth.instance;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    emailendController.text = '@iiitvadodara.ac.in';
+    super.initState();
+  }
+
+  @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    emailController.dispose();
+    // emailController.dispose();
     passwordController.dispose();
   }
 
   void login() {
     _auth
         .signInWithEmailAndPassword(
-            email: emailController.text,
+            email: '${email + emailendController.text}',
             password: passwordController.text.toString())
         .then((value) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -108,7 +116,10 @@ class _LoginState extends State<Login> {
                         TextFormField(
                           keyboardType: TextInputType.emailAddress,
                           maxLines: 1,
-                          controller: emailController,
+                          onChanged: (value) {
+                            email =
+                                value; //https://youtu.be/ftFNV6k0xBY  see this for clarity
+                          },
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(),
                             hintText: 'Enter Email',
