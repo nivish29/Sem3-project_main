@@ -1,18 +1,87 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_crud_fb/screens/nav_pages/main_page.dart';
 
-class LoginWithPhone extends StatefulWidget {
-  const LoginWithPhone({Key? key}) : super(key: key);
+import '../../Utils/utils.dart';
+import '../../Widgets/Round_btn.dart';
+
+class VerifyCodeScreen extends StatefulWidget {
+  final String Verificationid;
+  const VerifyCodeScreen({Key? key, required this.Verificationid})
+      : super(key: key);
 
   @override
-  State<LoginWithPhone> createState() => _LoginWithPhoneState();
+  State<VerifyCodeScreen> createState() => _VerifyCodeScreenState();
 }
 
-class _LoginWithPhoneState extends State<LoginWithPhone> {
+class _VerifyCodeScreenState extends State<VerifyCodeScreen> {
+  bool Loading = false;
+  final auth = FirebaseAuth.instance;
+  final PhoneController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [],
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 40),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 120,
+              ),
+              Container(
+                // margin: EdgeInsets.only(left: 20),
+                child: const Text(
+                  'Verify!!',
+                  style: TextStyle(
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87),
+                ),
+              ),
+              SizedBox(
+                height: 70,
+              ),
+              TextFormField(
+                keyboardType: TextInputType.phone,
+                maxLines: 1,
+                controller: PhoneController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Enter OTP',
+                  prefixIcon: Icon(Icons.phone),
+                ),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Enter Phone Number';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(
+                height: 40,
+              ),
+              RoundButton(
+                  title: 'Verify',
+                  onTap: () async {
+                    setState(() {
+                      Loading = true;
+                    });
+                    final credential = PhoneAuthProvider.credential(
+                        verificationId: widget.Verificationid,
+                        smsCode: PhoneController.text.toString());
+                    try {
+                      await auth.signInWithCredential(credential);
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => MainPage()));
+                    } catch (e) {
+                      Utils().ToastMsg(e.toString());
+                    }
+                  }),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -130,12 +130,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         controller: emailController,
                         decoration: const InputDecoration(
                           border: OutlineInputBorder(),
-                          hintText: 'Enter Email',
+                          hintText: 'Enter Your Id',
                           prefixIcon: Icon(Icons.email_outlined),
                         ),
+                        onFieldSubmitted: (text) {
+                          emailController.text =
+                              '${emailController.text.toString()}@iiitvadodara.ac.in';
+                        },
+                        textInputAction: TextInputAction.send,
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return 'Enter Email';
+                            return 'Enter Id';
                           }
                           return null;
                         },
@@ -146,7 +151,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       TextFormField(
                         obscureText: true,
                         maxLines: 1,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'Enter Password',
                           border: OutlineInputBorder(),
                           prefixIcon: Icon(Icons.lock),

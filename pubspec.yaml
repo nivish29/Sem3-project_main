@@ -42,6 +42,7 @@ dependencies:
   fluttertoast: ^8.1.1 #for showing toasts
   url_launcher: ^6.1.6
   cloud_firestore: ^4.0.4
+  pinput: ^2.2.16
 
 dev_dependencies:
   flutter_test:

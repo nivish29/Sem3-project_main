@@ -3,7 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_crud_fb/Widgets/Round_btn.dart';
+import 'package:flutter_crud_fb/screens/Auth/Login_with_Phone.dart';
 import 'package:flutter_crud_fb/screens/Auth/SignUp_Screen.dart';
+import 'package:flutter_crud_fb/screens/Auth/forgot_pass.dart';
 import 'package:flutter_crud_fb/screens/nav_pages/main_page.dart';
 
 import '../../Utils/utils.dart';
@@ -140,12 +142,17 @@ class _LoginState extends State<Login> {
                         ),
                       ],
                     )),
-                Row(
-                  children: [
-                    Container(
-                        child: TextButton(
-                            onPressed: () {}, child: Text('Forgot password?'))),
-                  ],
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Container(
+                      child: TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ForgotPassword()));
+                          },
+                          child: Text('Forgot password?'))),
                 ),
                 SizedBox(
                   height: 5,
@@ -161,7 +168,12 @@ class _LoginState extends State<Login> {
                   height: 20,
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => LoginWithPhone()));
+                  },
                   child: Container(
                     height: 45,
                     decoration: BoxDecoration(
