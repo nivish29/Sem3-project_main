@@ -1,4 +1,8 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_crud_fb/Database_manager/Database_Manager.dart';
+import 'package:flutter_crud_fb/Utils/utils.dart';
+import 'package:flutter_crud_fb/Widgets/Round_btn.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -19,6 +23,29 @@ class _ContactsState extends State<Contacts> {
   //for fetch
   final ref = FirebaseDatabase.instance.ref('MyQuestions');
   final searchFilter = TextEditingController();
+  final userCollection = FirebaseFirestore.instance.collection('User');
+  final uid = FirebaseAuth.instance.currentUser?.uid;
+
+  // List userProfileList = [];
+  //
+  // @override
+  // void initState() {
+  //   // TODO: implement initState
+  //   super.initState();
+  //   fetchDatabaseList();
+  // }
+  //
+  // fetchDatabaseList() async {
+  //   dynamic resultant = await DatabaseManager().getUserList();
+  //
+  //   if (resultant == null) {
+  //     Utils().ToastMsg('Unable to retrieve');
+  //   } else {
+  //     setState(() {
+  //       userProfileList = resultant;
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -110,6 +137,28 @@ class _ContactsState extends State<Contacts> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(18),
                     ),
+                    // child: ListTile(
+                    //   leading: const Icon(
+                    //     Icons.arrow_forward_ios,
+                    //     color: Colors.black87,
+                    //     size: 18,
+                    //   ),
+                    //   textColor: Colors.black87,
+                    //   onTap: () {
+                    //     Uri uri;
+                    //     String stringUri =
+                    //         snapshot.child('link').value.toString();
+                    //     uri = Uri.parse(stringUri);
+                    //     launchUrl(uri);
+                    //   },
+                    //   title: Text(
+                    //     snapshot.child('title').value.toString(),
+                    //     style: const TextStyle(
+                    //         fontWeight: FontWeight.bold, fontSize: 15),
+                    //   ),
+                    //   subtitle:
+                    //       Text(snapshot.child('category').value.toString()),
+                    // ),
                     child: ListTile(
                       leading: const Icon(
                         Icons.arrow_forward_ios,
@@ -156,6 +205,17 @@ class _ContactsState extends State<Contacts> {
         ),
       ),
     );
+  }
+
+  Future getCurrentUserData() async {
+    try {
+      DocumentSnapshot ds = await userCollection.doc(uid).get();
+      String name = ds.get('Name');
+      return name;
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
   }
 }
 // Expanded(
