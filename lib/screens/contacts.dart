@@ -11,6 +11,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crud_fb/screens/addContacts.dart';
 
+import 'Vertical_Details.dart';
+
 class Contacts extends StatefulWidget {
   const Contacts({Key? key}) : super(key: key);
 
@@ -25,7 +27,8 @@ class _ContactsState extends State<Contacts> {
   final searchFilter = TextEditingController();
   final userCollection = FirebaseFirestore.instance.collection('User');
   final uid = FirebaseAuth.instance.currentUser?.uid;
-
+  // final fireStore = FirebaseFirestore.instance.collection('User').snapshots();
+  final fireStore = FirebaseFirestore.instance;
   // List userProfileList = [];
   //
   // @override
@@ -50,7 +53,7 @@ class _ContactsState extends State<Contacts> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xff252525),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -61,7 +64,7 @@ class _ContactsState extends State<Contacts> {
               style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black87),
+                  color: Colors.white),
             ),
           ),
           Padding(
@@ -74,120 +77,155 @@ class _ContactsState extends State<Contacts> {
                   setState(() {});
                 }),
           ),
-          Expanded(
-              child: FirebaseAnimatedList(
-            defaultChild: const Center(
-              //     child: Text(
-              //   'Loading...',
-              //   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              // )
-              child: CircularProgressIndicator(
-                color: Colors.black87,
-              ),
-            ),
-            query: ref,
-            itemBuilder: (context, snapshot, animation, index) {
-              // final title = snapshot.child('title').value.toString();
-              final category = snapshot.child('category').value.toString();
-              if (searchFilter.text.isEmpty) {
-                return Container(
-                  color: Colors.white,
-                  padding: EdgeInsets.symmetric(vertical: 6, horizontal: 20),
-                  child: Card(
-                    elevation: 3,
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                    child: ListTile(
-                      leading: const Icon(
-                        Icons.arrow_forward_ios,
-                        color: Colors.black87,
-                        size: 18,
-                      ),
-                      textColor: Colors.black87,
-                      onTap: () {
-                        Uri uri;
-                        String stringUri =
-                            snapshot.child('link').value.toString();
-                        uri = Uri.parse(stringUri);
-                        launchUrl(uri);
-                      },
-                      title: Text(
-                        snapshot.child('title').value.toString(),
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15),
-                      ),
-                      subtitle: Text(
-                        snapshot.child('category').value.toString(),
-                        style: TextStyle(fontSize: 10),
-                      ),
-                    ),
-                  ),
+
+          StreamBuilder<QuerySnapshot>(
+              stream: fireStore
+                  .collection("Company")
+                  .doc(uid)
+                  .collection("question")
+                  .snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                }
+                if (snapshot.hasError) {
+                  return Text('Some Error Occured');
+                }
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  child: ListView.builder(
+                      itemCount: snapshot.data!.docs.length,
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            final uri =
+                                snapshot.data!.docs[index]['link'].toString();
+                            launch(uri);
+                          },
+                          child: VerticalDetailsList(
+                              QName: snapshot.data!.docs[index]['title']
+                                  .toString()),
+                        );
+                      }),
                 );
-              } else if (category
-                  .toLowerCase()
-                  .contains(searchFilter.text.toLowerCase())) {
-                return Container(
-                  color: Colors.white,
-                  padding: EdgeInsets.symmetric(vertical: 6, horizontal: 20),
-                  child: Card(
-                    elevation: 3,
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                    // child: ListTile(
-                    //   leading: const Icon(
-                    //     Icons.arrow_forward_ios,
-                    //     color: Colors.black87,
-                    //     size: 18,
-                    //   ),
-                    //   textColor: Colors.black87,
-                    //   onTap: () {
-                    //     Uri uri;
-                    //     String stringUri =
-                    //         snapshot.child('link').value.toString();
-                    //     uri = Uri.parse(stringUri);
-                    //     launchUrl(uri);
-                    //   },
-                    //   title: Text(
-                    //     snapshot.child('title').value.toString(),
-                    //     style: const TextStyle(
-                    //         fontWeight: FontWeight.bold, fontSize: 15),
-                    //   ),
-                    //   subtitle:
-                    //       Text(snapshot.child('category').value.toString()),
-                    // ),
-                    child: ListTile(
-                      leading: const Icon(
-                        Icons.arrow_forward_ios,
-                        color: Colors.black87,
-                        size: 18,
-                      ),
-                      textColor: Colors.black87,
-                      onTap: () {
-                        Uri uri;
-                        String stringUri =
-                            snapshot.child('link').value.toString();
-                        uri = Uri.parse(stringUri);
-                        launchUrl(uri);
-                      },
-                      title: Text(
-                        snapshot.child('title').value.toString(),
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 15),
-                      ),
-                      subtitle:
-                          Text(snapshot.child('category').value.toString()),
-                    ),
-                  ),
-                );
-              } else {
-                return Container();
-              }
-            },
-          )),
+              }),
+          // Expanded(
+          //     child: FirebaseAnimatedList(
+          //   defaultChild: const Center(
+          //     //     child: Text(
+          //     //   'Loading...',
+          //     //   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          //     // )
+          //     child: CircularProgressIndicator(
+          //       color: Colors.black87,
+          //     ),
+          //   ),
+          //   query: ref,
+          //   itemBuilder: (context, snapshot, animation, index) {
+          //     // final title = snapshot.child('title').value.toString();
+          //     final category = snapshot.child('category').value.toString();
+          //     if (searchFilter.text.isEmpty) {
+          //       return Container(
+          //         color: Color(0xff252525),
+          //         padding: EdgeInsets.symmetric(vertical: 6, horizontal: 20),
+          //         child: Card(
+          //           elevation: 3,
+          //           color: Colors.white,
+          //           shape: RoundedRectangleBorder(
+          //             borderRadius: BorderRadius.circular(18),
+          //           ),
+          //           child: ListTile(
+          //             leading: const Icon(
+          //               Icons.arrow_forward_ios,
+          //               color: Colors.black87,
+          //               size: 18,
+          //             ),
+          //             textColor: Colors.black87,
+          //             onTap: () {
+          //               Uri uri;
+          //               String stringUri =
+          //                   snapshot.child('link').value.toString();
+          //               uri = Uri.parse(stringUri);
+          //               launchUrl(uri);
+          //             },
+          //             title: Text(
+          //               snapshot.child('title').value.toString(),
+          //               style: const TextStyle(
+          //                   fontWeight: FontWeight.bold, fontSize: 15),
+          //             ),
+          //             subtitle: Text(
+          //               snapshot.child('category').value.toString(),
+          //               style: TextStyle(fontSize: 10),
+          //             ),
+          //           ),
+          //         ),
+          //       );
+          //     } else if (category
+          //         .toLowerCase()
+          //         .contains(searchFilter.text.toLowerCase())) {
+          //       return Container(
+          //         color: Colors.white,
+          //         padding: EdgeInsets.symmetric(vertical: 6, horizontal: 20),
+          //         child: Card(
+          //           elevation: 3,
+          //           color: Colors.white,
+          //           shape: RoundedRectangleBorder(
+          //             borderRadius: BorderRadius.circular(18),
+          //           ),
+          //           // child: ListTile(
+          //           //   leading: const Icon(
+          //           //     Icons.arrow_forward_ios,
+          //           //     color: Colors.black87,
+          //           //     size: 18,
+          //           //   ),
+          //           //   textColor: Colors.black87,
+          //           //   onTap: () {
+          //           //     Uri uri;
+          //           //     String stringUri =
+          //           //         snapshot.child('link').value.toString();
+          //           //     uri = Uri.parse(stringUri);
+          //           //     launchUrl(uri);
+          //           //   },
+          //           //   title: Text(
+          //           //     snapshot.child('title').value.toString(),
+          //           //     style: const TextStyle(
+          //           //         fontWeight: FontWeight.bold, fontSize: 15),
+          //           //   ),
+          //           //   subtitle:
+          //           //       Text(snapshot.child('category').value.toString()),
+          //           // ),
+          //           child: ListTile(
+          //             leading: const Icon(
+          //               Icons.arrow_forward_ios,
+          //               color: Colors.black87,
+          //               size: 18,
+          //             ),
+          //             textColor: Colors.black87,
+          //             onTap: () {
+          //               Uri uri;
+          //               String stringUri =
+          //                   snapshot.child('link').value.toString();
+          //               uri = Uri.parse(stringUri);
+          //               launchUrl(uri);
+          //             },
+          //             title: Text(
+          //               snapshot.child('title').value.toString(),
+          //               style: const TextStyle(
+          //                   fontWeight: FontWeight.bold, fontSize: 15),
+          //             ),
+          //             subtitle:
+          //                 Text(snapshot.child('category').value.toString()),
+          //           ),
+          //         ),
+          //       );
+          //     } else {
+          //       return Container();
+          //     }
+          //   },
+          // )),
         ],
       ),
       floatingActionButton: Padding(

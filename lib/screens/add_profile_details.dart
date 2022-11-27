@@ -29,6 +29,7 @@ class _AddProfileDetailsState extends State<AddProfileDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       // backgroundColor: Color(0xFFF2EFF5),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30),

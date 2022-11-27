@@ -36,12 +36,13 @@ class _MainDrawerState extends State<MainDrawer> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      backgroundColor: Color(0xff252525),
       child: Column(
         children: [
           Container(
             width: double.infinity,
             padding: EdgeInsets.all(20),
-            color: Theme.of(context).primaryColor,
+            color: Color(0xffE4AD5F),
             child: Center(
               child: Column(
                 children: [
@@ -74,7 +75,7 @@ class _MainDrawerState extends State<MainDrawer> {
               });
             },
             leading: Icon(Icons.logout),
-            title: Text('Logout'),
+            title: Text('Logout', style: TextStyle(color: Colors.white)),
           ),
           SizedBox(
             height: 5,
@@ -84,7 +85,10 @@ class _MainDrawerState extends State<MainDrawer> {
               Utils().ToastMsg(uid.toString());
             },
             leading: Icon(Icons.account_circle),
-            title: Text('UID'),
+            title: Text(
+              'UID',
+              style: TextStyle(color: Colors.white),
+            ),
           ),
           SizedBox(
             height: 5,

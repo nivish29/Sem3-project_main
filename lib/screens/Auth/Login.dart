@@ -78,6 +78,7 @@ class _LoginState extends State<Login> {
         //   // automaticallyImplyLeading: false,
         // ),
         // backgroundColor: Color(0xFFF2EFF5),
+        backgroundColor: Colors.white,
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
           child: SingleChildScrollView(
@@ -236,7 +237,8 @@ class _LoginState extends State<Login> {
                         //   Utils().ToastMsg(error.toString());
                         // });
                       },
-                      icon: Image.asset('images/googlebg.png'),
+                      icon: Image.asset('images/googlebg.png',
+                          color: Colors.white),
                       iconSize: 35,
                     ),
                   ),

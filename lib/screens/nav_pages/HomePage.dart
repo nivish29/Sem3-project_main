@@ -1,9 +1,13 @@
+import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_crud_fb/Widgets/My_Vertical_List.dart';
+import 'package:flutter_crud_fb/screens/Company_Details.dart';
+import 'package:flutter_crud_fb/screens/category_screen.dart';
 import 'package:flutter_crud_fb/screens/main_drawer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -21,6 +25,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(
+          0xff252525), //this should be argb and not hex therfore convert it using websites
       drawer: MainDrawer(),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -31,7 +37,7 @@ class _HomePageState extends State<HomePage> {
               children: [
                 Builder(builder: (context) {
                   return IconButton(
-                    color: Colors.black54,
+                    color: Colors.white30,
                     onPressed: () {
                       Scaffold.of(context).openDrawer();
                     },
@@ -54,14 +60,14 @@ class _HomePageState extends State<HomePage> {
                   child: const Text(
                     'Discover',
                     style: TextStyle(
-                        fontSize: 30,
+                        fontSize: 40,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black87),
+                        color: Colors.white30),
                   ),
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
+                // const SizedBox(
+                //   height: 20,
+                // ),
 
                 StreamBuilder<QuerySnapshot>(
                     stream: fireStore,
@@ -80,14 +86,56 @@ class _HomePageState extends State<HomePage> {
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
                             itemBuilder: (context, index) {
-                              return MyVerticalList(
-                                CompanyName: snapshot
-                                    .data!.docs[index]['CompanyName']
-                                    .toString(),
-                                PackageOffers: snapshot
-                                    .data!.docs[index]['Package']
-                                    .toString(),
-                                CompanyImg: 'images/googlebg.png',
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      PageRouteBuilder(
+                                        transitionDuration:
+                                            const Duration(milliseconds: 900),
+                                        pageBuilder: (context, animation,
+                                                secondaryAnimation) =>
+                                            CompanyDetailScreen(
+                                          img: snapshot.data!.docs[index]['Img']
+                                              .toString(),
+                                          tag: snapshot
+                                              .data!.docs[index]['CompanyName']
+                                              .toString(),
+                                          companyName: snapshot
+                                              .data!.docs[index]['CompanyName']
+                                              .toString(),
+                                          desc: snapshot
+                                              .data!.docs[index]['Desc']
+                                              .toString(),
+                                          A1: snapshot
+                                              .data!.docs[index]['Alumini1Name']
+                                              .toString(),
+                                          A1Link: snapshot
+                                              .data!.docs[index]['Al1Link']
+                                              .toString(),
+                                          A2: snapshot
+                                              .data!.docs[index]['Alumini2Name']
+                                              .toString(),
+                                          A2Link: snapshot
+                                              .data!.docs[index]['Al2Link']
+                                              .toString(),
+                                          id: snapshot.data!.docs[index]['id']
+                                              .toString(),
+                                        ),
+                                      ));
+                                },
+                                child: MyVerticalList(
+                                  CompanyName: snapshot
+                                      .data!.docs[index]['CompanyName']
+                                      .toString(),
+                                  PackageOffers: snapshot
+                                      .data!.docs[index]['Package']
+                                      .toString(),
+                                  CompanyImg: snapshot.data!.docs[index]['Img']
+                                      .toString(),
+                                  tag: snapshot.data!.docs[index]['CompanyName']
+                                      .toString(),
+                                ),
                               );
                             }),
                       );

@@ -26,7 +26,9 @@ class MyApp extends StatelessWidget {
       create: (context) => GoogleSignInCubit(),
       child: MaterialApp(
           title: 'flutter crud',
-          theme: ThemeData(primarySwatch: Colors.deepPurple),
+          theme: ThemeData(
+              primarySwatch: Colors.deepPurple,
+              scaffoldBackgroundColor: Color(0x252525)),
           // home: Contacts(),
           home: SplashScreen()),
     );

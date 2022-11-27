@@ -35,6 +35,7 @@ class _AddContactsState extends State<AddContacts> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('Add Questions'),
       ),
