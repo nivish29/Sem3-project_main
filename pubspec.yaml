@@ -44,6 +44,8 @@ dependencies:
   cloud_firestore: ^4.0.4
   pinput: ^2.2.16
   google_sign_in: ^5.4.2
+  firebase_messaging: ^14.1.2
+  flutter_local_notifications: ^12.0.4
   #for google icon
   font_awesome_flutter: ^10.2.1
 
