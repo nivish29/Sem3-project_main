@@ -42,7 +42,7 @@ class _VerticalDetailsListState extends State<VerticalDetailsList> {
                     color: Color(0xff3c413f),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.white.withOpacity(0.30),
+                        color: Colors.black.withOpacity(0.30),
                         spreadRadius: 0,
                         blurRadius: 13,
                         offset: Offset(0, 9),

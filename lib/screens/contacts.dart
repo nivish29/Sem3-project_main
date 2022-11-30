@@ -54,6 +54,7 @@ class _ContactsState extends State<Contacts> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xff252525),
+      // backgroundColor: Colors.green,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -72,46 +73,77 @@ class _ContactsState extends State<Contacts> {
             child: TextFormField(
                 controller: searchFilter,
                 decoration: InputDecoration(
-                    hintText: 'search', border: OutlineInputBorder()),
+                  hintText: 'Search',
+                  hintStyle: TextStyle(color: Colors.white),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      borderSide:
+                          const BorderSide(color: Colors.white, width: 1.0)),
+                ),
                 onChanged: (String value) {
                   setState(() {});
                 }),
           ),
 
-          StreamBuilder<QuerySnapshot>(
-              stream: fireStore
-                  .collection("Company")
-                  .doc(uid)
-                  .collection("question")
-                  .snapshots(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                }
-                if (snapshot.hasError) {
-                  return Text('Some Error Occured');
-                }
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25),
-                  child: ListView.builder(
-                      itemCount: snapshot.data!.docs.length,
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            final uri =
-                                snapshot.data!.docs[index]['link'].toString();
-                            launch(uri);
-                          },
-                          child: VerticalDetailsList(
-                              QName: snapshot.data!.docs[index]['title']
-                                  .toString()),
-                        );
-                      }),
-                );
-              }),
+          Expanded(
+            child: ListView(
+              physics: BouncingScrollPhysics(),
+              children: [
+                StreamBuilder<QuerySnapshot>(
+                    stream: fireStore
+                        .collection("User")
+                        .doc(uid)
+                        .collection("question")
+                        .snapshots(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        // return CircularProgressIndicator();
+                      }
+                      if (snapshot.hasError) {
+                        return Text('Some Error Occured');
+                      }
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 25),
+                        child: ListView.builder(
+                            itemCount: snapshot.data!.docs.length,
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  final uri = snapshot.data!.docs[index]['link']
+                                      .toString();
+                                  launch(uri);
+                                },
+                                // onTap: () {
+                                //
+                                //   deleteQuestion(snapshot
+                                //       .data!.docs[index]['id']
+                                //       .toString());
+                                // },
+                                child: Dismissible(
+                                  direction: DismissDirection.startToEnd,
+                                  key: UniqueKey(),
+                                  onDismissed: (direction) {
+                                    deleteQuestion(snapshot
+                                        .data!.docs[index]['id']
+                                        .toString());
+                                  },
+                                  child: VerticalDetailsList(
+                                      QName: snapshot.data!.docs[index]['title']
+                                          .toString()),
+                                ),
+                              );
+                            }),
+                      );
+                    }),
+              ],
+            ),
+          ),
           // Expanded(
           //     child: FirebaseAnimatedList(
           //   defaultChild: const Center(
@@ -254,6 +286,15 @@ class _ContactsState extends State<Contacts> {
       print(e.toString());
       return null;
     }
+  }
+
+  deleteQuestion(id) {
+    FirebaseFirestore.instance
+        .collection("User")
+        .doc(uid)
+        .collection("question")
+        .doc(id)
+        .delete();
   }
 }
 // Expanded(

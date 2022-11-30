@@ -54,8 +54,15 @@ class _LoginState extends State<Login> {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Logged In"),
       ));
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => AddProfileDetails()));
+
+      if (_auth.currentUser?.uid == null) {
+        //if the user is logging first time the send him to add profile details
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => AddProfileDetails()));
+      } else {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => MainPage()));
+      }
       Utils().ToastMsg(value.user!.email.toString());
     }).onError((error, stackTrace) {
       debugPrint(error.toString());
